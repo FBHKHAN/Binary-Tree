@@ -13,14 +13,17 @@ using namespace std;
 struct Node {
     
     int value;
-    Node* Left;
-    Node* Right;
+    Node* left;
+    Node* right;
     
+    //  Constructors
+    Node();
     Node(int value) {
-        Left = nullptr;
-        Right = nullptr;
+        left = nullptr;
+        right = nullptr;
         this->value = value;
     }
+    
 }* root = nullptr;
 
 class Tree {
@@ -30,38 +33,77 @@ public:
     Tree(const int );
     
     Node* createNode(int value);
-    void treeInsert(int value, Node* leaf);
+    void insert(int value);
+    void insert(int value, Node* leaf);
+    void display_PostOrder(Node* root);
+    void display_PreOrder(Node* root);
+    void inOrderOutput(Node* root);
+
 };
 
 Tree::Tree() { }
 
-Tree::Tree(const int value) {
+void Tree::insert(int value) {
     
+    if (root != nullptr) {
+        insert(value, root);
+    }
+    else {
+        root = new Node(value);
+    }
     
 }
 
-void Tree::treeInsert(int value, Node* leaf){
+//
+//  Overloaded function.
+//
+//  Inserts new value in the tree.
+//
+void Tree::insert(int value, Node *leaf)
+{
+    if(value < leaf->value)
+    {
+        if(leaf->left!=NULL)
+            insert(value, leaf->left);
+        else
+        {
+            leaf->left=new Node(value);
+        }
+    }
+    else if(value >= leaf->value)
+    {
+        if(leaf->right!=NULL)
+            insert(value, leaf->right);
+        else
+        {
+            leaf->right = new Node(value);
+        }
+    }
+}
+
+void Tree::inOrderOutput(Node* root){
     
-    if (root == nullptr) {
-        root = new Node(value);         // Base Case
-    }
-    else if (value == root->value){
-        return;
-    }
-    else if(value < root-> value) {
-        treeInsert(value, leaf);        // Recursive
-    }
-    else{
-        
+    if (root != NULL) {
+        inOrderOutput(root->left);
+        cout << root->value << " ";
+        inOrderOutput(root->right);
     }
     
 }
 
 int main() {
     
-    int numbers[10] ={51,45, 65, 34, 23, 80, 85, 32, 33, 10};
+    const int MAX_NUM = 10;
     
+    int numbers[MAX_NUM] ={ 51, 45, 65, 34, 23, 80, 85, 32, 33, 10 };
     
+    Tree* tree;
+    tree = new Tree();
+    for (int i = 0; i < MAX_NUM; i++) {
+        tree->insert(numbers[i]);
+    }
+    
+    tree->inOrderOutput(root);
     
     return 0;
 }
