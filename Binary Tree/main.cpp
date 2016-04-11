@@ -35,9 +35,9 @@ public:
     Node* createNode(int value);
     void insert(int value);
     void insert(int value, Node* leaf);
-    void postOrderOutput(Node* root);
-    void preOrderOutput(Node* root);
-    void inOrderOutput(Node* root);
+    void postTraversal(Node* root);
+    void preTraversal(Node* root);
+    void inTraversal(Node* root);
 
 };
 
@@ -81,24 +81,43 @@ void Tree::insert(int value, Node *leaf)
     }
 }
 
-void Tree::inOrderOutput(Node* root){
+//
+//  Prints out the tree in In-Order Traversal
+//
+void Tree::inTraversal(Node* root){
     
     if (root != NULL) {
-        inOrderOutput(root->left);
+        inTraversal(root->left);
         cout << root->value << " ";
-        inOrderOutput(root->right);
+        inTraversal(root->right);
     }
     
 }
 
-void Tree::preOrderOutput(Node* root){
+//
+//  Prints out the tree in Pre-Order Traversal
+//
+
+void Tree::preTraversal(Node* root){
     
     if (root != NULL) {
         cout << root->value << " ";
-        preOrderOutput(root -> left);
-        preOrderOutput(root -> right);
+        preTraversal(root -> left);
+        preTraversal(root -> right);
     }
     
+}
+
+//
+//  Prints out the tree in Post-Order Traversal
+//
+
+void Tree::postTraversal(Node* root){
+    if (root != NULL) {
+        postTraversal(root->left);
+        postTraversal(root->right);
+        cout << root -> value << " ";
+    }
 }
 
 int main() {
@@ -114,10 +133,13 @@ int main() {
     }
     
     cout << "In Order Output: " << endl;
-    tree->inOrderOutput(root);
+    tree->inTraversal(root);
     
-    cout << "Post Order Output: " << endl;
-    tree -> preOrderOutput(root);
+    cout << "\n\nPre Order Output: " << endl;
+    tree -> preTraversal(root);
+    
+    cout << "\n\nPost Order Output: " << endl;
+    tree -> postTraversal(root);
     
     return 0;
 }
