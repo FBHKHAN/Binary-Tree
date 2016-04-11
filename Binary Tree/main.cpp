@@ -27,6 +27,7 @@ struct Node {
 }* root = nullptr;
 
 class Tree {
+    
 public:
     
     Tree();
@@ -34,10 +35,11 @@ public:
     
     Node* createNode(int value);
     void insert(int value);
-    void insert(int value, Node* leaf);
-    void postTraversal(Node* root);
-    void preTraversal(Node* root);
-    void inTraversal(Node* root);
+    void insert(int value, Node*);
+    void postTraversal(Node*);
+    void preTraversal(Node*);
+    void inTraversal(Node*);
+    int countNodes(Node*, int);
 
 };
 
@@ -120,11 +122,23 @@ void Tree::postTraversal(Node* root){
     }
 }
 
+int Tree::countNodes(Node* root, int count = 0) {
+    
+    if (root != NULL) {
+        count += countNodes(root -> left);
+        count += countNodes(root -> right);
+        count++;
+        return count;
+    }
+    
+    return 0;
+}
+
 int main() {
     
-    const int MAX_NUM = 10;
+    const int MAX_NUM = 11;
     
-    int numbers[MAX_NUM] ={ 51, 45, 65, 34, 23, 80, 85, 32, 33, 10 };
+    int numbers[MAX_NUM] ={ 51, 45, 65, 34, 23, 80, 85, 32, 33, 10, 34 };
     
     Tree* tree;
     tree = new Tree();
@@ -140,6 +154,8 @@ int main() {
     
     cout << "\n\nPost Order Output: " << endl;
     tree -> postTraversal(root);
+    
+    cout << "Total Nodes: " << tree->countNodes(root) << endl;
     
     return 0;
 }
