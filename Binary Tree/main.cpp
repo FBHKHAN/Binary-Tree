@@ -35,8 +35,8 @@ public:
     Node* createNode(int value);
     void insert(int value);
     void insert(int value, Node* leaf);
-    void display_PostOrder(Node* root);
-    void display_PreOrder(Node* root);
+    void postOrderOutput(Node* root);
+    void preOrderOutput(Node* root);
     void inOrderOutput(Node* root);
 
 };
@@ -91,6 +91,16 @@ void Tree::inOrderOutput(Node* root){
     
 }
 
+void Tree::preOrderOutput(Node* root){
+    
+    if (root != NULL) {
+        cout << root->value << " ";
+        preOrderOutput(root -> left);
+        preOrderOutput(root -> right);
+    }
+    
+}
+
 int main() {
     
     const int MAX_NUM = 10;
@@ -103,7 +113,11 @@ int main() {
         tree->insert(numbers[i]);
     }
     
+    cout << "In Order Output: " << endl;
     tree->inOrderOutput(root);
+    
+    cout << "Post Order Output: " << endl;
+    tree -> preOrderOutput(root);
     
     return 0;
 }
