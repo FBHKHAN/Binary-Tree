@@ -18,7 +18,9 @@ struct Node {
     
     //  Constructors
     Node();
+    
     Node(int value) {
+        
         left = nullptr;
         right = nullptr;
         this->value = value;
@@ -39,7 +41,8 @@ public:
     void postTraversal(Node*);
     void preTraversal(Node*);
     void inTraversal(Node*);
-    int countNodes(Node*, int);
+    void countNodes(Node*, int&);
+    void countLeaf(Node*, int&);
 
 };
 
@@ -59,7 +62,7 @@ void Tree::insert(int value) {
 //
 //  Overloaded function.
 //
-//  Inserts new value in the tree.
+//  Inserts new value in the tree using recursion.
 //
 void Tree::insert(int value, Node *leaf)
 {
@@ -89,9 +92,9 @@ void Tree::insert(int value, Node *leaf)
 void Tree::inTraversal(Node* root){
     
     if (root != NULL) {
-        inTraversal(root->left);
-        cout << root->value << " ";
-        inTraversal(root->right);
+        inTraversal(root->left);        //  Descend Left
+        cout << root->value << " ";     //  Print the value
+        inTraversal(root->right);       //  Descend Right
     }
     
 }
@@ -103,9 +106,9 @@ void Tree::inTraversal(Node* root){
 void Tree::preTraversal(Node* root){
     
     if (root != NULL) {
-        cout << root->value << " ";
-        preTraversal(root -> left);
-        preTraversal(root -> right);
+        cout << root->value << " ";     //  Print the value
+        preTraversal(root -> left);     //  Descend Left
+        preTraversal(root -> right);    //  Descend Right
     }
     
 }
@@ -116,27 +119,43 @@ void Tree::preTraversal(Node* root){
 
 void Tree::postTraversal(Node* root){
     if (root != NULL) {
-        postTraversal(root->left);
-        postTraversal(root->right);
-        cout << root -> value << " ";
+        postTraversal(root->left);      //  Descend Left
+        postTraversal(root->right);     //  Descend Right
+        cout << root -> value << " ";   //  Print the value
     }
 }
 
-int Tree::countNodes(Node* root, int count = 0) {
+void Tree::countNodes(Node* root, int& count) {
     
     if (root != NULL) {
-        count += countNodes(root -> left);
-        count += countNodes(root -> right);
+        countNodes(root -> left, count);    //  Descend Left
+        countNodes(root -> right, count);   //  Descend Right
         count++;
-        return count;
     }
     
-    return 0;
 }
+
+void Tree::countLeaf(Node* root, int& count){
+    
+    if (root != NULL) {
+        
+        //  Check if root is a leaf, if so increment the count
+        if (root->right == NULL && root ->left == NULL)
+            count++;
+        
+        countLeaf(root->left, count);   //  Descend Left
+        countLeaf(root->right, count);  //  Descend Right
+        
+    }
+    
+}
+
+
 
 int main() {
     
     const int MAX_NUM = 11;
+    int nodeCount = 0, leafCount = 0;
     
     int numbers[MAX_NUM] ={ 51, 45, 65, 34, 23, 80, 85, 32, 33, 10, 34 };
     
@@ -155,7 +174,11 @@ int main() {
     cout << "\n\nPost Order Output: " << endl;
     tree -> postTraversal(root);
     
-    cout << "Total Nodes: " << tree->countNodes(root) << endl;
+    tree->countNodes(root, nodeCount);
+    cout << "Total Nodes: " << nodeCount << endl;
+    
+    tree->countLeaf(root, leafCount);
+    cout << "Total Leaves: " << leafCount << endl;
     
     return 0;
 }
