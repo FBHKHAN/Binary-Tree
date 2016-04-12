@@ -26,23 +26,39 @@ struct Node {
         this->value = value;
     }
     
-}* root = nullptr;
+    //
+    //  Constructor used for copying/cloning another tree.
+    //
+    Node(int value, Node* newLeft, Node* newRight) {
+        
+        this->value = value;
+        left = newLeft;
+        right = newRight;
+        
+    }
+    
+};
 
 class Tree {
     
 public:
+    
+    Node* root = nullptr;
     
     Tree();
     Tree(const int );
     
     Node* createNode(int value);
     void insert(int value);
-    void insert(int value, Node*);
-    void postTraversal(Node*);
-    void preTraversal(Node*);
-    void inTraversal(Node*);
-    void countNodes(Node*, int&);
-    void countLeaf(Node*, int&);
+    void insert(int value, Node*);      //  Insert new value to tree
+    void postTraversal(Node*);          //  Output in Post Traversal Form
+    void preTraversal(Node*);           //  Output in Pre Traversal Form
+    void inTraversal(Node*);            //  Output in In Traversal Form
+    void countNodes(Node*, int&);       //  Count the total number of Nodes in the tree
+    void countLeaf(Node*, int&);        //  Count the total number of leaves in the tree
+    int depth(Node*);                   //  Calculate the depth of the tree
+    Node* copyTree(Node*);              //  Clones/copies another tree and returns the root
+    void deleteTree(Node*);             //  Deletes the entire tree to free up the memory.
 
 };
 
@@ -60,9 +76,9 @@ void Tree::insert(int value) {
 }
 
 //
-//  Overloaded function.
+//  insert - Overloaded function.
 //
-//  Inserts new value in the tree using recursion.
+//  Inserts new value in the tree.
 //
 void Tree::insert(int value, Node *leaf)
 {
@@ -75,7 +91,7 @@ void Tree::insert(int value, Node *leaf)
             leaf->left=new Node(value);
         }
     }
-    else if(value >= leaf->value)
+    else if(value > leaf->value)
     {
         if(leaf->right!=NULL)
             insert(value, leaf->right);
@@ -83,6 +99,10 @@ void Tree::insert(int value, Node *leaf)
         {
             leaf->right = new Node(value);
         }
+    }
+    else if(value == leaf -> value) {
+        cout << "ATTENTION! Duplicate value inserted: " << value << endl;
+        return;
     }
 }
 
@@ -102,7 +122,6 @@ void Tree::inTraversal(Node* root){
 //
 //  Prints out the tree in Pre-Order Traversal
 //
-
 void Tree::preTraversal(Node* root){
     
     if (root != NULL) {
@@ -116,7 +135,6 @@ void Tree::preTraversal(Node* root){
 //
 //  Prints out the tree in Post-Order Traversal
 //
-
 void Tree::postTraversal(Node* root){
     if (root != NULL) {
         postTraversal(root->left);      //  Descend Left
@@ -150,35 +168,99 @@ void Tree::countLeaf(Node* root, int& count){
     
 }
 
+int Tree::depth(Node* root) {
+    
+    int depthLeft, depthRight, depthVal;
+    
+    if (root == NULL) {
+        
+        //  Depth of an empty tree is -1
+        depthVal = -1;
+    }
+    else {
+        // find the depth of the left subtree of t
+        depthLeft = depth(root -> left);
+        
+        // find the depth of the right subtree of t
+        depthRight = depth(root -> right);
+        
+        // Depth of the tree with root is 1 + Maximum
+        // of the depths of the two subtrees
+        depthVal = 1 + (depthLeft > depthRight ? depthLeft : depthRight);
+    }
+    
+    return depthVal;
+}
 
+Node* Tree::copyTree(Node* root) {
+    
+    Node* newLeft,* newRight,* newNode;
+    
+    if(root == NULL)
+        return NULL;
+    
+    newLeft = copyTree(root->left);
+    newRight = copyTree(root->right);
+    
+    newNode = new Node(root->value, newLeft, newRight);
+    
+    return newNode;
+}
+
+void Tree::deleteTree(Node* root) {
+    
+    if (root != NULL) {
+        deleteTree(root->left);
+        deleteTree(root->right);
+        delete(root);
+    }
+    
+}
 
 int main() {
     
-    const int MAX_NUM = 11;
+    const int MAX_NUM = 12;
     int nodeCount = 0, leafCount = 0;
     
-    int numbers[MAX_NUM] ={ 51, 45, 65, 34, 23, 80, 85, 32, 33, 10, 34 };
+    int numbers[MAX_NUM] ={ 51, 45, 47, 65, 34, 23, 80, 85, 32, 33, 10, 34 };
     
-    Tree* tree;
-    tree = new Tree();
+    Tree* treeOne;
+    treeOne = new Tree();
+    
+    Tree* treeTwo;
+    treeTwo = new Tree();
+    
     for (int i = 0; i < MAX_NUM; i++) {
-        tree->insert(numbers[i]);
+        treeOne->insert(numbers[i]);
     }
     
     cout << "In Order Output: " << endl;
-    tree->inTraversal(root);
+    treeOne->inTraversal(treeOne->root);
     
     cout << "\n\nPre Order Output: " << endl;
-    tree -> preTraversal(root);
+    treeOne -> preTraversal(treeOne->root);
     
     cout << "\n\nPost Order Output: " << endl;
-    tree -> postTraversal(root);
+    treeOne -> postTraversal(treeOne->root);
     
-    tree->countNodes(root, nodeCount);
+    treeOne->countNodes(treeOne->root, nodeCount);
     cout << "Total Nodes: " << nodeCount << endl;
     
-    tree->countLeaf(root, leafCount);
+    treeOne->countLeaf(treeOne->root, leafCount);
     cout << "Total Leaves: " << leafCount << endl;
+    
+    
+    cout << "\nDepth of the tree: " << treeOne->depth(treeOne->root) << endl;
+    
+    //
+    // copying treeOne to treeTwo
+    //
+    treeTwo->root = treeOne->copyTree(treeOne->root);
+    
+    cout << "\nNew Tree's Pre Order Output: " << endl;
+    treeTwo -> preTraversal(treeTwo->root);
+    
+    cout << endl <<endl;
     
     return 0;
 }
